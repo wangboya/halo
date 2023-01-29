@@ -1,0 +1,50 @@
+server:
+  port: 8090
+spring:
+  r2dbc:
+    url: r2dbc:pool:mysql://localhost:3306/halo
+    username: halo
+    password: halo
+  output:
+    ansi:
+      enabled: always
+  thymeleaf:
+    cache: false
+  sql:
+    init:
+      mode: always
+      platform: mysql
+
+halo:
+  console:
+    proxy:
+      endpoint: http://localhost:3000/
+      enabled: true
+  security:
+    initializer:
+      super-admin-username: admin
+      super-admin-password: admin
+  plugin:
+    runtime-mode: development # development, deployment
+    classes-directories:
+      - "build/classes"
+      - "build/resources"
+    lib-directories:
+      - "libs"
+  work-dir: ${user.home}/halo2-devmysql
+logging:
+  level:
+    run.halo.app: DEBUG
+    org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler: DEBUG
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+  show-actuator: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
