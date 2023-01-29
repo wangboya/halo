@@ -21,6 +21,11 @@ public class Metadata implements MetadataOperator {
     private String name;
 
     /**
+     * Metadata type. 用于特殊区分一些类型。
+     */
+    private String type;
+
+    /**
      * Generate name is for generating metadata name automatically.
      */
     private String generateName;

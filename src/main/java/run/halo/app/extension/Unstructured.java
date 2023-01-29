@@ -73,6 +73,11 @@ public class Unstructured implements Extension {
         }
 
         @Override
+        public String getType() {
+            return (String) getNestedValue(data, "metadata", "type").orElse(null);
+        }
+
+        @Override
         public String getGenerateName() {
             return (String) getNestedValue(data, "metadata", "generateName").orElse(null);
         }
@@ -110,6 +115,11 @@ public class Unstructured implements Extension {
         @Override
         public void setName(String name) {
             setNestedValue(data, name, "metadata", "name");
+        }
+
+        @Override
+        public void setType(String type) {
+            setNestedValue(data, type, "metadata", "name");
         }
 
         @Override

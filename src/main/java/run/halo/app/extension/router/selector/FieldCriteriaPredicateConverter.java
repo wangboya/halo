@@ -13,24 +13,30 @@ public class FieldCriteriaPredicateConverter<E extends Extension>
     public Predicate<E> convert(SelectorCriteria criteria) {
         // current we only support name field.
         return ext -> {
+            String value = null;
+            boolean hint = false;
             if ("name".equals(criteria.key())) {
-                var name = ext.getMetadata().getName();
-                if (name == null) {
+                value = ext.getMetadata().getName();
+
+                hint = true;
+            } else if ("type".equals(criteria.key())) {
+                value = ext.getMetadata().getType();
+                hint = true;
+            }
+            if (!hint || value == null) {
+                return false;
+            }
+            switch (criteria.operator()) {
+                case Equals, IN -> {
+                    return criteria.values().contains(value);
+                }
+                case NotEquals -> {
+                    return !criteria.values().contains(value);
+                }
+                default -> {
                     return false;
                 }
-                switch (criteria.operator()) {
-                    case Equals, IN -> {
-                        return criteria.values().contains(name);
-                    }
-                    case NotEquals -> {
-                        return !criteria.values().contains(name);
-                    }
-                    default -> {
-                        return false;
-                    }
-                }
             }
-            return false;
         };
     }
 }

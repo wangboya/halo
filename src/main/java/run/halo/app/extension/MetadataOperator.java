@@ -21,6 +21,10 @@ public interface MetadataOperator {
     @JsonProperty("name")
     String getName();
 
+    @Schema(name = "type", description = "Metadata type")
+    @JsonProperty("type")
+    String getType();
+
     @Schema(name = "generateName", description = "The name field will be generated automatically "
         + "according to the given generateName field")
     String getGenerateName();
@@ -50,6 +54,8 @@ public interface MetadataOperator {
 
     void setName(String name);
 
+    void setType(String type);
+
     void setGenerateName(String generateName);
 
     void setLabels(Map<String, String> labels);
@@ -72,6 +78,9 @@ public interface MetadataOperator {
             return false;
         }
         if (!Objects.equals(left.getName(), right.getName())) {
+            return false;
+        }
+        if (!Objects.equals(left.getType(), right.getType())) {
             return false;
         }
         if (!Objects.equals(left.getLabels(), right.getLabels())) {
