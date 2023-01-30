@@ -19,13 +19,11 @@ import org.openapi4j.schema.validator.BaseJsonValidator;
 import org.openapi4j.schema.validator.ValidationContext;
 import org.openapi4j.schema.validator.ValidationData;
 import org.openapi4j.schema.validator.v3.SchemaValidator;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import run.halo.app.extension.exception.ExtensionConvertException;
 import run.halo.app.extension.exception.SchemaViolationException;
 import run.halo.app.extension.store.ExtensionStore;
-import run.halo.app.infra.utils.JsonUtils;
 
 /**
  * JSON implementation of ExtensionConverter.
@@ -70,7 +68,7 @@ public class JSONExtensionConverter implements ExtensionConverter {
 
             var version = extension.getMetadata().getVersion();
             var storeName = ExtensionUtil.buildStoreName(scheme, extension.getMetadata().getName());
-            return new ExtensionStore(storeName, extension, version);
+            return new ExtensionStore(storeName, data, version);
         } catch (IOException e) {
             throw new ExtensionConvertException("Failed write Extension as bytes", e);
         } catch (ResolutionException e) {
@@ -81,27 +79,14 @@ public class JSONExtensionConverter implements ExtensionConverter {
     @Override
     public <E extends Extension> E convertFrom(Class<E> type, ExtensionStore extensionStore) {
         try {
-            if (extensionStore.getData() == null) {
-                return null;
-            } else if (type.isInstance(extensionStore.getData())) {
-                return (E) extensionStore.getData();
-            }  else {
-                if (!Unstructured.class.isInstance(extensionStore.getData())){
-                    log.error("类型异常，使用json做中间处理！extension类型:{},目标类型:{},名称:{}",
-                        extensionStore.getData().getClass(), type,extensionStore.getName());
-                }
-                var extension = objectMapper.readValue(
-                    objectMapper.writeValueAsBytes(extensionStore.getData()), type);
-                extensionStore.setData(extension);
-                extension.getMetadata().setVersion(extensionStore.getVersion());
-                return extension;
-            }
+            var extension = objectMapper.readValue(extensionStore.getData(), type);
+            extension.getMetadata().setVersion(extensionStore.getVersion());
+            return extension;
         } catch (IOException e) {
             throw new ExtensionConvertException("Failed to read Extension " + type + " from bytes",
                 e);
         }
     }
-
 
     private SchemaValidator getValidator(Scheme scheme)
         throws MalformedURLException, ResolutionException {
