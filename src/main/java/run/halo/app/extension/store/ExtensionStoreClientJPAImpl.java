@@ -14,44 +14,36 @@ import reactor.core.publisher.Mono;
 @Service
 public class ExtensionStoreClientJPAImpl implements ExtensionStoreClient {
 
-    private final ExtensionStoreRepository repository;
+    private final ReactiveExtensionStoreClient client;
 
-    public ExtensionStoreClientJPAImpl(ExtensionStoreRepository repository) {
-        this.repository = repository;
+    public ExtensionStoreClientJPAImpl(ReactiveExtensionStoreClient client) {
+        this.client = client;
     }
 
     @Override
     public List<ExtensionStore> listByNamePrefix(String prefix) {
-        return repository.findAllByNameStartingWith(prefix).collectList().block();
+        return client.listByNamePrefix(prefix).collectList().block();
     }
 
     @Override
     public Optional<ExtensionStore> fetchByName(String name) {
-        return repository.findById(name).blockOptional();
+        return client.fetchByName(name).blockOptional();
     }
 
     @Override
-    public ExtensionStore create(String name, byte[] data) {
-        var store = new ExtensionStore(name, data);
-        return repository.save(store).block();
+    public ExtensionStore create(ExtensionStore store) {
+        return client.create(store).block();
     }
 
     @Override
-    public ExtensionStore update(String name, Long version, byte[] data) {
-        var store = new ExtensionStore(name, data, version);
-        return repository.save(store).block();
+    public ExtensionStore update(ExtensionStore store) {
+
+        return client.update(store).block();
     }
 
     @Override
-    public ExtensionStore delete(String name, Long version) {
-        return repository.findById(name)
-            .switchIfEmpty(Mono.error(() -> new EntityNotFoundException(
-                "Extension store with name " + name + " was not found.")))
-            .flatMap(deleting -> {
-                deleting.setVersion(version);
-                return repository.delete(deleting).thenReturn(deleting);
-            })
-            .block();
+    public ExtensionStore delete(ExtensionStore store) {
+        return  client.delete(store).block();
     }
 
 }

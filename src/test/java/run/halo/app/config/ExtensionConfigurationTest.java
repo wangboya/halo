@@ -31,7 +31,7 @@ import run.halo.app.extension.FakeExtension;
 import run.halo.app.extension.Metadata;
 import run.halo.app.extension.Scheme;
 import run.halo.app.extension.SchemeManager;
-import run.halo.app.extension.store.ExtensionStoreRepository;
+import run.halo.app.extension.store.ExtensionStoreEntityRepository;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
@@ -65,7 +65,7 @@ class ExtensionConfigurationTest {
     }
 
     @AfterEach
-    void cleanUp(@Autowired ExtensionStoreRepository repository) {
+    void cleanUp(@Autowired ExtensionStoreEntityRepository repository) {
         repository.deleteAll().subscribe();
     }
 

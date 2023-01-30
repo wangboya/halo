@@ -8,6 +8,8 @@ import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.XSlf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.util.Predicates;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,7 @@ import run.halo.app.extension.exception.ExtensionNotFoundException;
 import run.halo.app.extension.store.ReactiveExtensionStoreClient;
 
 @Component
+@Slf4j
 public class ReactiveExtensionClientImpl implements ReactiveExtensionClient {
 
     private final ReactiveExtensionStoreClient client;
@@ -117,7 +120,7 @@ public class ReactiveExtensionClientImpl implements ReactiveExtensionClient {
                 extension.setMetadata(metadata);
             })
             .map(converter::convertTo)
-            .flatMap(extStore -> client.create(extStore.getName(), extStore.getData())
+            .flatMap(extStore -> client.create(extStore)
                 .map(created -> converter.convertFrom((Class<E>) extension.getClass(), created))
                 .doOnNext(watchers::onAdd))
             .retryWhen(Retry.backoff(3, Duration.ofMillis(100))
@@ -129,6 +132,7 @@ public class ReactiveExtensionClientImpl implements ReactiveExtensionClient {
     @Override
     public <E extends Extension> Mono<E> update(E extension) {
         // overwrite some fields
+        // log.debug("update trace",new RuntimeException());
         Mono<? extends Extension> mono;
         if (extension instanceof Unstructured unstructured) {
             mono = get(unstructured.groupVersionKind(), extension.getMetadata().getName());
@@ -145,9 +149,7 @@ public class ReactiveExtensionClientImpl implements ReactiveExtensionClient {
                 extension.setMetadata(newMetadata);
                 return converter.convertTo(extension);
             })
-            .flatMap(extensionStore -> client.update(extensionStore.getName(),
-                extensionStore.getVersion(),
-                extensionStore.getData()))
+            .flatMap(extensionStore -> client.update(extensionStore))
             .map(updated -> converter.convertFrom((Class<E>) extension.getClass(), updated))
             .doOnNext(updated -> watchers.onUpdate(extension, updated));
     }
@@ -155,10 +157,11 @@ public class ReactiveExtensionClientImpl implements ReactiveExtensionClient {
     @Override
     public <E extends Extension> Mono<E> delete(E extension) {
         // set deletionTimestamp
+        // log.debug("update trace",new RuntimeException());
         extension.getMetadata().setDeletionTimestamp(Instant.now());
         var extensionStore = converter.convertTo(extension);
-        return client.update(extensionStore.getName(), extensionStore.getVersion(),
-                extensionStore.getData())
+
+        return client.update(extensionStore)
             .map(deleted -> converter.convertFrom((Class<E>) extension.getClass(), deleted))
             .doOnNext(watchers::onDelete);
     }

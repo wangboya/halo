@@ -10,7 +10,7 @@ import reactor.core.publisher.Flux;
  * @author johnniang
  */
 @Repository
-public interface ExtensionStoreRepository extends R2dbcRepository<ExtensionStore, String> {
+public interface ExtensionStoreEntityRepository extends R2dbcRepository<ExtensionStoreEntity, String> {
 
     /**
      * Finds all ExtensionStore by name prefix.

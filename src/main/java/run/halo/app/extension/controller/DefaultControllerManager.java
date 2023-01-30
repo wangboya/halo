@@ -70,6 +70,7 @@ public class DefaultControllerManager
     @Override
     public void onApplicationEvent(SchemeInitializedEvent event) {
         // register reconcilers in system after scheme initialized
+       // log.error("!!!!!!skip reconcilers!!!!!!");
         applicationContext.<Reconciler<Request>>getBeanProvider(
                 forClassWithGenerics(Reconciler.class, Request.class))
             .orderedStream()

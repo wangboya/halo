@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 class ExtensionStoreClientJPAImplTest {
 
     @Mock
-    ExtensionStoreRepository repository;
+    ExtensionStoreEntityRepository repository;
 
     @InjectMocks
     ExtensionStoreClientJPAImpl client;

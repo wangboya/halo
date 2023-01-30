@@ -5,7 +5,6 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Table;
-import run.halo.app.extension.Extension;
 
 /**
  * ExtensionStore is an entity for storing Extension data into database.
@@ -13,41 +12,42 @@ import run.halo.app.extension.Extension;
  * @author johnniang
  */
 @Data
-public class ExtensionStore {
+@Table(name = "extensions")
+public class ExtensionStoreEntity {
 
     /**
      * Extension store name, which is globally unique.
      * We will use it to query Extensions by using left-like query clause.
      */
-
+    @Id
     private String name;
 
     /**
      * Exactly Extension body, which might be base64 format.
      */
-
-    private Extension data;
+    @Lob
+    private byte[] data;
 
     /**
      * This field only for serving optimistic lock value.
      */
-
+    @Version
     private Long version;
 
-    public ExtensionStore() {
+    public ExtensionStoreEntity() {
     }
 
-    public ExtensionStore(String name, Extension data) {
+    public ExtensionStoreEntity(String name, byte[] data) {
         this.name = name;
         this.data = data;
     }
 
-    public ExtensionStore(String name, Long version) {
+    public ExtensionStoreEntity(String name, Long version) {
         this.name = name;
         this.version = version;
     }
 
-    public ExtensionStore(String name, Extension data, Long version) {
+    public ExtensionStoreEntity(String name, byte[] data, Long version) {
         this.name = name;
         this.data = data;
         this.version = version;

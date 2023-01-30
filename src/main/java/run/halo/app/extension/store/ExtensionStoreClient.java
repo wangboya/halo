@@ -33,7 +33,7 @@ public interface ExtensionStoreClient {
      * @param data is Extension body to be persisted.
      * @return a fresh ExtensionStore created just now.
      */
-    ExtensionStore create(String name, byte[] data);
+    ExtensionStore create(ExtensionStore store);
 
     /**
      * Updates an ExtensionStore with version to prevent concurrent update.
@@ -43,7 +43,7 @@ public interface ExtensionStoreClient {
      * @param data is Extension body to be updated.
      * @return updated ExtensionStore with a fresh version.
      */
-    ExtensionStore update(String name, Long version, byte[] data);
+    ExtensionStore update(ExtensionStore store);
 
     /**
      * Deletes an ExtensionStore by name and current version.
@@ -52,7 +52,7 @@ public interface ExtensionStoreClient {
      * @param version is the expected version of ExtensionStore.
      * @return previous ExtensionStore.
      */
-    ExtensionStore delete(String name, Long version);
+    ExtensionStore delete(ExtensionStore store);
 
     //TODO add watch method here.
 }

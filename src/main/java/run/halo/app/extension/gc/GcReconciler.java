@@ -46,7 +46,7 @@ class GcReconciler implements Reconciler<GcRequest> {
             .filter(deletable())
             .ifPresent(extension -> {
                 var extensionStore = converter.convertTo(extension);
-                storeClient.delete(extensionStore.getName(), extensionStore.getVersion());
+                storeClient.delete(extensionStore);
                 log.debug("Extension {} was deleted", request);
             });
 

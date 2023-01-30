@@ -9,10 +9,10 @@ public interface ReactiveExtensionStoreClient {
 
     Mono<ExtensionStore> fetchByName(String name);
 
-    Mono<ExtensionStore> create(String name, byte[] data);
+    Mono<ExtensionStore> create(ExtensionStore store);
 
-    Mono<ExtensionStore> update(String name, Long version, byte[] data);
+    Mono<ExtensionStore> update(ExtensionStore store);
 
-    Mono<ExtensionStore> delete(String name, Long version);
+    Mono<ExtensionStore> delete(ExtensionStore store);
 
 }
