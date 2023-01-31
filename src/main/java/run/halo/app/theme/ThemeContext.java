@@ -12,7 +12,10 @@ import lombok.EqualsAndHashCode;
 @Data
 @Builder
 @EqualsAndHashCode(of = "name")
+
 public class ThemeContext {
+
+
 
     public static final String THEME_PREVIEW_PARAM_NAME = "preview-theme";
 

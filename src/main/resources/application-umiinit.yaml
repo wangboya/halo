@@ -1,0 +1,15 @@
+server:
+  port: 18090
+  r2dbc:
+    url: r2dbc:pool:mysql://localhost:3306/web3_umidao_org
+    username: web3_umidao_org
+    password: XbxCA7LPahrRJPMY
+  sql:
+    init:
+      mode: always
+      platform: mysql
+halo:
+  security:
+    initializer:
+      super-admin-username: admin
+      super-admin-password: wei9Neey1lie6sea2eilaw3a

@@ -28,7 +28,8 @@ halo:
   work-dir: ${user.home}/halo2-dev
 logging:
   level:
-    run.halo.app: DEBUG
+    root: WARN
+    run.halo.app: WARN
     org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler: DEBUG
 springdoc:
   api-docs:
